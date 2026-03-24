@@ -1,7 +1,7 @@
 # Cloud Programming Project – Hosting a Webpage on AWS
 
 This project demonstrates the deployment of a simple webpage on AWS using Terraform as an Infrastructure as Code (IaC) tool.  
-It was developed for the IU portfolio assignment in the Cloud Programming module.
+It was developed as part of the IU portfolio assignment for the Cloud Programming module.
 
 ---
 
@@ -9,9 +9,9 @@ It was developed for the IU portfolio assignment in the Cloud Programming module
 
 The goal of this project is to design and implement a cloud-based solution for hosting a webpage while considering the following cloud requirements:
 
-- High availability
-- Low latency for global users
-- Scalable backend infrastructure
+- High availability  
+- Low latency for global users  
+- Scalable backend infrastructure  
 
 ---
 
@@ -19,60 +19,59 @@ The goal of this project is to design and implement a cloud-based solution for h
 
 The architecture proposed in Phase 1 was:
 
-User → Route 53 → CloudFront → Load Balancer → Auto Scaling Group → EC2 Instances
+User → Route 53 → CloudFront → Load Balancer → Auto Scaling Group → EC2 Instances  
 
-In Phase 2, the implementation focused on deploying and validating the core hosting setup with EC2, Apache, HTML, and Terraform.
+In Phase 2, the implementation focused on deploying and validating the core hosting setup using EC2, Apache, HTML, and Terraform.
 
 ---
 
 ## Features
 
-- Deployment of a simple webpage on AWS
-- EC2 instance used as a virtual server
-- Webpage hosted with Apache
-- Infrastructure defined with Terraform
-- Deployment validated through browser access and Terraform commands
+- Deployment of a simple webpage on AWS  
+- EC2 instance used as a virtual server  
+- Webpage hosted with Apache  
+- Infrastructure defined with Terraform  
+- Deployment validated through browser access and Terraform commands  
 
 ---
 
 ## Technologies Used
 
-- AWS EC2
-- Terraform
-- Apache Web Server
-- HTML
+- AWS EC2  
+- Terraform  
+- Apache Web Server  
+- HTML  
 
 ---
 
 ## Project Structure
 
-cloud-programming-project/
-├── main.tf          # Terraform configuration
-├── mywebsite.html   # Simple webpage file
-└── README.md        # Project documentation
+- `main.tf` — Terraform configuration (Infrastructure as Code)  
+- `mywebsite.html` — Simple HTML webpage  
+- `README.md` — Project documentation  
 
 ---
 
 ## How to Use
 
-1. Create or configure the AWS environment
-2. Use Terraform to define the infrastructure
-3. Launch the EC2 instance
-4. Install and start Apache on the server
-5. Deploy the HTML file
-6. Access the webpage through the public IP address
+1. Configure the AWS environment  
+2. Use Terraform to define the infrastructure  
+3. Launch the EC2 instance  
+4. Install and start Apache on the server  
+5. Deploy the HTML file  
+6. Access the webpage using the public IP address  
 
 ---
 
 ## Validation
 
-The deployment was checked using:
+The deployment was verified using:
 
-- `terraform init`
-- `terraform validate`
-- `terraform plan`
+- `terraform init`  
+- `terraform validate`  
+- `terraform plan`  
 
-The final result was verified by opening the webpage in a browser through the EC2 public IP address.
+The final result was confirmed by accessing the webpage through the EC2 public IP address.
 
 ---
 
@@ -84,7 +83,7 @@ The full advanced architecture from Phase 1, including CloudFront, Route 53, Loa
 
 ## Author
 
-Aydan Huseynli
+Aydan Huseynli  
 
-Created for the IU module
+Created for the IU module  
 DLBSEPCP01_E – Cloud Programming
