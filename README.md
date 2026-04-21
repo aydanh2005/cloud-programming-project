@@ -7,40 +7,42 @@ It was developed as part of the IU portfolio assignment for the Cloud Programmin
 
 ## Project Objective
 
-The goal of this project is to design and implement a cloud-based solution for hosting a webpage while considering the following cloud requirements:
-
-- High availability  
-- Low latency for global users  
-- Scalable backend infrastructure  
+The goal of this project was to design and implement a cloud-based solution for hosting a simple webpage while considering key cloud computing principles such as reliability, scalability, and reproducibility.
 
 ---
 
 ## Architecture Overview
 
-The architecture proposed in Phase 1 was:
+In the conception phase, a broader AWS architecture was planned:
 
-User → Route 53 → CloudFront → Load Balancer → Auto Scaling Group → EC2 Instances  
+User → Route 53 → CloudFront → Load Balancer → Auto Scaling Group → EC2 Instances
 
-In Phase 2, the implementation focused on deploying and validating the core hosting setup using EC2, Apache, HTML, and Terraform.
+This initial design reflected ideas such as global accessibility, scalability, and improved traffic handling.
+
+In the development phase, the final prototype focused on a practical and cost-efficient implementation using:
+- a single AWS EC2 instance
+- Apache Web Server
+- Terraform
+- a static HTML webpage
 
 ---
 
 ## Features
 
-- Deployment of a simple webpage on AWS  
-- EC2 instance used as a virtual server  
-- Webpage hosted with Apache  
-- Infrastructure defined with Terraform  
-- Deployment validated through browser access and Terraform commands  
+- Deployment of a simple webpage on AWS
+- EC2 instance used as a virtual server
+- Webpage hosted with Apache Web Server
+- Infrastructure defined with Terraform
+- Deployment verified through Terraform commands and browser access
 
 ---
 
 ## Technologies Used
 
-- AWS EC2  
-- Terraform  
-- Apache Web Server  
-- HTML  
+- AWS EC2
+- Terraform
+- Apache Web Server
+- HTML
 
 ---
 
@@ -54,13 +56,16 @@ In Phase 2, the implementation focused on deploying and validating the core host
 
 ## How to Use
 
-1. Configure the AWS environment  
-2. Use Terraform to define the infrastructure  
-3. Launch the EC2 instance  
-4. Install and start Apache on the server  
-5. Deploy the HTML file  
-6. Access the webpage using the public IP address  
-
+1. Define infrastructure using Terraform
+2. Initialize Terraform environment
+3. Validate configuration
+4. Preview infrastructure changes
+5. Apply infrastructure changes
+6. Launch the EC2 instance
+7. Install and start Apache Web Server
+8. Upload the HTML webpage
+9. Access the webpage through the EC2 public IP
+   
 ---
 
 ## Validation
@@ -71,7 +76,10 @@ The deployment was verified using:
 - `terraform validate`  
 - `terraform plan`  
 
-The final result was confirmed by accessing the webpage through the EC2 public IP address.
+The final result was confirmed by:
+- checking that the EC2 instance reached the running state
+- verifying that the webpage loaded successfully in a browser through the public IP address
+
 
 ---
 
