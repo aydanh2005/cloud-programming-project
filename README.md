@@ -83,6 +83,16 @@ The final result was confirmed by:
 
 ---
 
+## Screenshots
+
+### EC2 Running State
+![EC2 Running State](screenshots/ec2-running.png)
+
+### Hosted Webpage
+![Hosted Webpage](screenshots/hosted-webpage.png)
+
+---
+
 ## Limitations
 
 The full advanced architecture from Phase 1, including CloudFront, Route 53, Load Balancer, and Auto Scaling, was designed conceptually but only partially implemented in Phase 2.
