@@ -1,107 +1,54 @@
-# Cloud Programming Project – Hosting a Webpage on AWS
+# IU Cloud Programming Resubmission
 
-This project demonstrates the deployment of a simple webpage on AWS using Terraform as an Infrastructure as Code (IaC) tool.  
-It was developed as part of the IU portfolio assignment for the Cloud Programming module.
+This project deploys a simple webpage to AWS using a fully automated and reproducible Terraform configuration.
 
----
+## Architecture
 
-## Project Objective
+Global visitor -> CloudFront -> Application Load Balancer -> Auto Scaling Group -> EC2 instances in two Availability Zones
 
-The goal of this project was to design and implement a cloud-based solution for hosting a simple webpage while considering key cloud computing principles such as reliability, scalability, and reproducibility.
+The design directly addresses the assignment requirements:
 
----
+- **High availability:** two EC2 instances are distributed across two Availability Zones and monitored by an Application Load Balancer.
+- **Low latency for global visitors:** CloudFront caches and delivers the webpage through AWS edge locations.
+- **Backend autoscaling:** the Auto Scaling Group maintains 2 instances and can scale to 4 using a CPU target-tracking policy.
+- **Reproducibility:** Terraform creates the network, security groups, ALB, launch template, Auto Scaling Group, scaling policy, CloudFront distribution, and webpage.
 
-## Architecture Overview
+Route 53 is intentionally omitted because the project does not require a custom domain. The CloudFront domain is the primary public URL.
 
-In the conception phase, a broader AWS architecture was planned:
+## Prerequisites
 
-User → Route 53 → CloudFront → Load Balancer → Auto Scaling Group → EC2 Instances
+- Terraform 1.5 or newer
+- AWS CLI with the `aydan-cloud` profile configured
+- AWS permissions to create VPC, EC2, ELB, Auto Scaling, CloudWatch scaling alarms, and CloudFront resources
 
-This initial design reflected ideas such as global accessibility, scalability, and improved traffic handling.
+## Deploy
 
-In the development phase, the final prototype focused on a practical and cost-efficient implementation using:
-- a single AWS EC2 instance
-- Apache Web Server
-- Terraform
-- a static HTML webpage
+```bash
+aws sts get-caller-identity --profile aydan-cloud
+terraform init
+terraform fmt -check
+terraform validate
+terraform plan -out=tfplan
+terraform apply tfplan
+```
 
----
+CloudFront may need several minutes after `terraform apply` finishes before the website is available. Use the `cloudfront_url` output as the final website address.
 
-## Features
+## Verify
 
-- Deployment of a simple webpage on AWS
-- EC2 instance used as a virtual server
-- Webpage hosted with Apache Web Server
-- Infrastructure defined with Terraform
-- Deployment verified through Terraform commands and browser access
+```bash
+terraform output
+curl "$(terraform output -raw load_balancer_url)"
+curl -L "$(terraform output -raw cloudfront_url)"
+aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names "$(terraform output -raw autoscaling_group_name)" --profile aydan-cloud
+```
 
----
+Capture evidence of `terraform validate`, the successful apply summary, Terraform outputs, two healthy target-group instances, Auto Scaling capacity, CloudFront enabled status, and the final webpage in a browser.
 
-## Technologies Used
+## Clean up after assessment
 
-- AWS EC2
-- Terraform
-- Apache Web Server
-- HTML
+To prevent ongoing AWS charges after evidence has been collected and the assessor no longer needs a live deployment:
 
----
-
-## Project Structure
-
-- `main.tf` — Terraform configuration (Infrastructure as Code)  
-- `mywebsite.html` — Simple HTML webpage  
-- `README.md` — Project documentation  
-
----
-
-## How to Use
-
-1. Define infrastructure using Terraform
-2. Initialize Terraform environment
-3. Validate configuration
-4. Preview infrastructure changes
-5. Apply infrastructure changes
-6. Launch the EC2 instance
-7. Install and start Apache Web Server
-8. Upload the HTML webpage
-9. Access the webpage through the EC2 public IP
-   
----
-
-## Validation
-
-The deployment was verified using:
-
-- `terraform init`  
-- `terraform validate`  
-- `terraform plan`  
-
-The final result was confirmed by:
-- checking that the EC2 instance reached the running state
-- verifying that the webpage loaded successfully in a browser through the public IP address
-
-
----
-
-## Screenshots
-
-### EC2 Running State
-![EC2 Running State](screenshots/ec2-running.png)
-
-### Hosted Webpage
-![Hosted Webpage](screenshots/hosted-webpage.png)
-
----
-
-## Limitations
-
-The full advanced architecture from Phase 1, including CloudFront, Route 53, Load Balancer, and Auto Scaling, was designed conceptually but only partially implemented in Phase 2.
-
----
-
-## Author
-
-Aydan Huseynli  
-
-Created for the IU module  
-DLBSEPCP01_E – Cloud Programming
+```bash
+terraform destroy
+```

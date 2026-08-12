@@ -1,0 +1,3 @@
+aws_region  = "eu-north-1"
+aws_profile = "aydan-cloud"
+project_name = "aydan-cloud-web"
