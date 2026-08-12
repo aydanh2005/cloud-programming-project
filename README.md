@@ -1,30 +1,89 @@
-# IU Cloud Programming Resubmission
+# Highly Available AWS Web Architecture with Terraform
 
-This project deploys a simple webpage to AWS using a fully automated and reproducible Terraform configuration.
+This project deploys a simple webpage on AWS using Terraform as Infrastructure as Code. The implementation provides high availability across two Availability Zones, global content delivery through Amazon CloudFront and automatic backend scaling based on CPU utilisation.
+
+The project was developed for the IU Cloud Programming module.
 
 ## Architecture
 
-Global visitor -> CloudFront -> Application Load Balancer -> Auto Scaling Group -> EC2 instances in two Availability Zones
+![AWS architecture](screenshots/architecture.png)
 
-The design directly addresses the assignment requirements:
+Request flow:
 
-- **High availability:** two EC2 instances are distributed across two Availability Zones and monitored by an Application Load Balancer.
-- **Low latency for global visitors:** CloudFront caches and delivers the webpage through AWS edge locations.
-- **Backend autoscaling:** the Auto Scaling Group maintains 2 instances and can scale to 4 using a CPU target-tracking policy.
-- **Reproducibility:** Terraform creates the network, security groups, ALB, launch template, Auto Scaling Group, scaling policy, CloudFront distribution, and webpage.
+`Global visitor → Amazon CloudFront → Application Load Balancer → Target Group → Auto Scaling Group → EC2 instances`
 
-Route 53 is intentionally omitted because the project does not require a custom domain. The CloudFront domain is the primary public URL.
+Terraform creates and manages the complete infrastructure, including the custom network.
+
+## Project Requirements
+
+| Requirement | Implemented solution |
+|---|---|
+| High availability | Two EC2 instances distributed across two Availability Zones |
+| Global low latency | Amazon CloudFront edge delivery and caching |
+| Scalable backend | Auto Scaling Group with CPU target tracking |
+| Infrastructure as Code | Modular Terraform configuration |
+| Automated webpage deployment | Apache and HTML installed through a user-data script |
+
+## AWS Resources
+
+- Custom VPC
+- Internet Gateway and public route table
+- Two public subnets across separate Availability Zones
+- Application Load Balancer
+- Target group with HTTP health checks
+- EC2 launch template
+- Auto Scaling Group
+- CPU target-tracking policy
+- Amazon CloudFront distribution
+- Dedicated security groups
+
+## Auto Scaling Configuration
+
+The Auto Scaling Group uses the following capacity settings:
+
+- Minimum capacity: `2`
+- Desired capacity: `2`
+- Maximum capacity: `4`
+- Health-check type: `ELB`
+- CPU target: `50%`
+
+![Auto Scaling capacity](screenshots/autoscaling-capacity.jpeg)
+
+## Project Structure
+
+| File | Purpose |
+|---|---|
+| `versions.tf` | Defines the required Terraform and AWS provider versions |
+| `providers.tf` | Configures the AWS provider, region and resource tags |
+| `variables.tf` | Defines configurable project values |
+| `data.tf` | Retrieves available zones and the latest Amazon Linux AMI |
+| `networking.tf` | Creates the VPC, subnets, Internet Gateway and public routing |
+| `security.tf` | Defines security groups for the load balancer and web servers |
+| `load-balancer.tf` | Creates the ALB, target group and listener |
+| `compute.tf` | Creates the launch template, Auto Scaling Group and scaling policy |
+| `cloudfront.tf` | Creates the CloudFront distribution |
+| `outputs.tf` | Returns the website, load-balancer and Auto Scaling outputs |
+| `user-data.sh` | Installs Apache and creates the HTML webpage |
+| `terraform.tfvars.example` | Provides an example variables file |
+| `DEPLOYMENT_EVIDENCE.md` | Documents implementation and verification evidence |
 
 ## Prerequisites
 
-- Terraform 1.5 or newer
-- AWS CLI with the `aydan-cloud` profile configured
-- AWS permissions to create VPC, EC2, ELB, Auto Scaling, CloudWatch scaling alarms, and CloudFront resources
+- Terraform `1.5` or newer
+- AWS CLI
+- An authenticated AWS CLI profile
+- AWS permissions for VPC, EC2, ELB, Auto Scaling, CloudWatch and CloudFront
 
-## Deploy
+The default configuration uses:
+
+- AWS region: `eu-north-1`
+- AWS CLI profile: `aydan-cloud`
+
+These values can be changed through Terraform variables.
+
+## Deployment
 
 ```bash
-aws sts get-caller-identity --profile aydan-cloud
 terraform init
 terraform fmt -check
 terraform validate
@@ -32,23 +91,48 @@ terraform plan -out=tfplan
 terraform apply tfplan
 ```
 
-CloudFront may need several minutes after `terraform apply` finishes before the website is available. Use the `cloudfront_url` output as the final website address.
+Terraform outputs the CloudFront URL, Application Load Balancer URL and Auto Scaling Group name after deployment.
 
-## Verify
+## Deployment Verification
 
-```bash
-terraform output
-curl "$(terraform output -raw load_balancer_url)"
-curl -L "$(terraform output -raw cloudfront_url)"
-aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names "$(terraform output -raw autoscaling_group_name)" --profile aydan-cloud
-```
+### Terraform validation and outputs
 
-Capture evidence of `terraform validate`, the successful apply summary, Terraform outputs, two healthy target-group instances, Auto Scaling capacity, CloudFront enabled status, and the final webpage in a browser.
+The Terraform configuration validated successfully and returned the deployed resource endpoints.
 
-## Clean up after assessment
+![Terraform validation and outputs](screenshots/terraform-validation-and-outputs.png)
 
-To prevent ongoing AWS charges after evidence has been collected and the assessor no longer needs a live deployment:
+### Load-balancer health checks
+
+The target group registered two EC2 instances in separate Availability Zones. Both targets passed the Application Load Balancer health checks.
+
+![Two healthy targets](screenshots/healthy-targets.jpeg)
+
+### CloudFront website delivery
+
+The final webpage was delivered successfully through the CloudFront HTTPS endpoint.
+
+![Live website through CloudFront](screenshots/cloudfront-live-website.png)
+
+## Security
+
+- EC2 instances accept HTTP traffic only from the Application Load Balancer security group.
+- Terraform state files, plan files and local provider data are excluded through `.gitignore`.
+- AWS credentials and private keys are not stored in this repository.
+- CloudFront redirects viewers to HTTPS.
+
+## Clean Up
+
+To prevent ongoing AWS charges after assessment and verification:
 
 ```bash
 terraform destroy
 ```
+
+---
+
+## Author
+
+Aydan Huseynli
+
+Created for the IU module  
+DLBSEPCP01_E – Cloud Programming
