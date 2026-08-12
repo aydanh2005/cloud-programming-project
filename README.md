@@ -134,5 +134,4 @@ terraform destroy
 
 Aydan Huseynli
 
-Created for the IU module  
-DLBSEPCP01_E – Cloud Programming
+This project was created for the DLBSEPCP01_E – Cloud Programming module at IU International University of Applied Sciences.
